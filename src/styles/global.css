@@ -231,6 +231,18 @@ tr:hover {
   height: 24rem;
 }
 
+.min-h-96 {
+  min-height: 24rem;
+}
+
+.min-h-80 {
+  min-height: 20rem;
+}
+
+.min-h-64 {
+  min-height: 16rem;
+}
+
 .flex {
   display: flex;
 }

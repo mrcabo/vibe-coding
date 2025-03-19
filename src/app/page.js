@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import AddStockForm from '../components/AddStockForm';
 import PortfolioList from '../components/PortfolioList';
 import PortfolioTreemap from '../components/PortfolioTreemap';
+import PortfolioTreemapSimplified from '../components/PortfolioTreemapSimplified';
 import TimeRangeSelector from '../components/TimeRangeSelector';
 import { loadPortfolio, savePortfolio } from '../lib/portfolioUtils';
 import { fetchStockData } from '../lib/stockApi';
@@ -16,9 +17,17 @@ export default function Home() {
 
   // Load portfolio data on component mount
   useEffect(() => {
-    const portfolioData = loadPortfolio();
-    setPortfolio(portfolioData);
-    updateStockData(portfolioData, timeRange);
+    // Add a short delay to ensure components are properly mounted
+    const timer = setTimeout(() => {
+      const portfolioData = loadPortfolio();
+      console.log("Loaded portfolio data:", portfolioData);
+      setPortfolio(portfolioData);
+      if (portfolioData && portfolioData.length > 0) {
+        updateStockData(portfolioData, timeRange);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   // Update stock data when portfolio or time range changes
@@ -117,11 +126,21 @@ export default function Home() {
               onChange={handleTimeRangeChange} 
             />
           </div>
-          <PortfolioTreemap 
+          {/* Try the simplified treemap first */}
+          <PortfolioTreemapSimplified 
             portfolio={portfolio} 
             stockData={stockData}
             isLoading={isLoading}
           />
+          
+          {/* Keep the original treemap as fallback but don't display it */}
+          <div style={{ display: 'none' }}>
+            <PortfolioTreemap 
+              portfolio={portfolio} 
+              stockData={stockData}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </div>
     </div>
