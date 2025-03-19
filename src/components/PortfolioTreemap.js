@@ -20,14 +20,15 @@ const PortfolioTreemap = ({ portfolio, stockData, isLoading }) => {
 
   // Prepare data for treemap
   const data = portfolio.map((stock) => {
+    // Ensure we have stock data before calculating
     const currentValue = calculateStockValue(stock, stockData);
     const percentChange = calculatePercentChange(stock, stockData);
     
     return {
       name: stock.symbol,
-      size: currentValue,
-      percentChange,
-      companyName: stock.companyName,
+      size: currentValue > 0 ? currentValue : 0.01, // Ensure positive size value
+      percentChange: percentChange || 0, // Default to 0 if undefined
+      companyName: stock.companyName || '',
       currentValue: currentValue.toFixed(2),
       investment: stock.investment.toFixed(2)
     };
@@ -54,17 +55,20 @@ const PortfolioTreemap = ({ portfolio, stockData, isLoading }) => {
 
   // Custom tooltip content
   const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length > 0) {
+    if (active && payload && payload.length > 0 && payload[0].payload) {
       const data = payload[0].payload;
-      const isPositive = data.percentChange >= 0;
+      
+      // Safely check if percentChange exists
+      const percentChange = typeof data.percentChange === 'number' ? data.percentChange : 0;
+      const isPositive = percentChange >= 0;
       
       return (
         <div className="p-3 bg-white border rounded shadow">
-          <h3 className="font-bold">{data.name} ({data.companyName})</h3>
-          <p>Current Value: ${data.currentValue}</p>
-          <p>Initial Investment: ${data.investment}</p>
+          <h3 className="font-bold">{data.name || 'Unknown'} {data.companyName ? `(${data.companyName})` : ''}</h3>
+          <p>Current Value: ${data.currentValue || '0.00'}</p>
+          <p>Initial Investment: ${data.investment || '0.00'}</p>
           <p className={isPositive ? 'text-green-600' : 'text-red-600'}>
-            Change: {isPositive ? '+' : ''}{data.percentChange.toFixed(2)}%
+            Change: {isPositive ? '+' : ''}{percentChange.toFixed(2)}%
           </p>
         </div>
       );
@@ -92,6 +96,11 @@ const PortfolioTreemap = ({ portfolio, stockData, isLoading }) => {
 
 // Custom treemap content component
 const CustomTreemapContent = ({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+  // Check if payload exists before accessing its properties
+  if (!payload) {
+    return null;
+  }
+  
   const percentChange = payload.percentChange || 0;
   const isPositive = percentChange >= 0;
   

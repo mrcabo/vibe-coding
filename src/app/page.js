@@ -32,13 +32,32 @@ export default function Home() {
     setIsLoading(true);
     
     try {
-      const symbols = portfolioData.map(item => item.symbol);
+      // Make sure we have valid portfolio data
+      if (!portfolioData || !Array.isArray(portfolioData) || portfolioData.length === 0) {
+        setStockData({});
+        return;
+      }
+      
+      // Filter out any items without symbols
+      const validStocks = portfolioData.filter(item => item && item.symbol);
+      const symbols = validStocks.map(item => item.symbol);
+      
       if (symbols.length > 0) {
         const data = await fetchStockData(symbols, range);
-        setStockData(data);
+        
+        // Validate the returned data
+        if (data && typeof data === 'object') {
+          setStockData(data);
+        } else {
+          console.error('Invalid data returned from fetchStockData');
+          setStockData({});
+        }
+      } else {
+        setStockData({});
       }
     } catch (error) {
       console.error('Failed to fetch stock data:', error);
+      setStockData({});
     } finally {
       setIsLoading(false);
     }

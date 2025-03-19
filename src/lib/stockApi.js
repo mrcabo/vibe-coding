@@ -104,10 +104,16 @@ const getDateXMonthsAgo = (dateString, months) => {
  * Generate mock stock data for development/demo purposes
  */
 const getMockStockData = (symbols, timeRange) => {
+  if (!symbols || !Array.isArray(symbols) || symbols.length === 0) {
+    return {};
+  }
+  
   const stockData = {};
   
   // For each symbol, generate realistic mock data
   symbols.forEach(symbol => {
+    if (!symbol) return; // Skip invalid symbols
+    
     // Base percentage change on time range
     let basePercentChange;
     switch (timeRange) {
@@ -127,22 +133,32 @@ const getMockStockData = (symbols, timeRange) => {
         basePercentChange = Math.random() * 8 - 4;
     }
     
-    // Add some variation based on the symbol
-    const symbolSeed = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const percentChange = basePercentChange + (symbolSeed % 10 - 5) / 10;
-    
-    // Mock current price (between $10 and $500)
-    const currentPrice = 10 + (symbolSeed % 490);
-    
-    // Calculate historical price based on the percent change
-    const historicalPrice = currentPrice / (1 + percentChange / 100);
-    
-    stockData[symbol] = {
-      currentPrice,
-      historicalPrice,
-      percentChange,
-      lastUpdated: new Date().toISOString().split('T')[0]
-    };
+    try {
+      // Add some variation based on the symbol
+      const symbolSeed = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const percentChange = parseFloat((basePercentChange + (symbolSeed % 10 - 5) / 10).toFixed(2));
+      
+      // Mock current price (between $10 and $500)
+      const currentPrice = parseFloat((10 + (symbolSeed % 490)).toFixed(2));
+      
+      // Calculate historical price based on the percent change
+      const historicalPrice = parseFloat((currentPrice / (1 + percentChange / 100)).toFixed(2));
+      
+      stockData[symbol] = {
+        currentPrice,
+        historicalPrice,
+        percentChange,
+        lastUpdated: new Date().toISOString().split('T')[0]
+      };
+    } catch (error) {
+      // If there's any error calculating, use safe defaults
+      stockData[symbol] = {
+        currentPrice: 100.00,
+        historicalPrice: 100.00,
+        percentChange: 0.00,
+        lastUpdated: new Date().toISOString().split('T')[0]
+      };
+    }
   });
   
   return stockData;
