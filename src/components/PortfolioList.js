@@ -16,10 +16,10 @@ const PortfolioList = ({ portfolio, stockData, onRemove }) => {
           <tr className="bg-gray-100">
             <th className="p-2 text-left">Symbol</th>
             <th className="p-2 text-left">Company</th>
+            <th className="p-2 text-right">Shares</th>
             <th className="p-2 text-right">Purchase Price</th>
             <th className="p-2 text-right">Current Price</th>
-            <th className="p-2 text-right">Investment</th>
-            <th className="p-2 text-right">Current Value</th>
+            <th className="p-2 text-right">Total Value</th>
             <th className="p-2 text-right">Change</th>
             <th className="p-2 text-center">Action</th>
           </tr>
@@ -34,13 +34,13 @@ const PortfolioList = ({ portfolio, stockData, onRemove }) => {
               <tr key={stock.symbol} className="border-b hover:bg-gray-50">
                 <td className="p-2 font-medium">{stock.symbol}</td>
                 <td className="p-2">{stock.companyName}</td>
+                <td className="p-2 text-right">{stock.shares}</td>
                 <td className="p-2 text-right">${stock.purchasePrice.toFixed(2)}</td>
                 <td className="p-2 text-right">
                   {stockData[stock.symbol] 
                     ? `$${stockData[stock.symbol].currentPrice.toFixed(2)}` 
                     : '-'}
                 </td>
-                <td className="p-2 text-right">${stock.investment.toFixed(2)}</td>
                 <td className="p-2 text-right">${currentValue.toFixed(2)}</td>
                 <td className={`p-2 text-right ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
                   {isPositiveChange ? '+' : ''}{percentChange.toFixed(2)}%

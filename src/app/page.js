@@ -6,6 +6,7 @@ import PortfolioList from '../components/PortfolioList';
 import PortfolioTreemap from '../components/PortfolioTreemap';
 import PortfolioTreemapSimplified from '../components/PortfolioTreemapSimplified';
 import TimeRangeSelector from '../components/TimeRangeSelector';
+import PortfolioIO from '../components/PortfolioIO';
 import { loadPortfolio, savePortfolio } from '../lib/portfolioUtils';
 import { fetchStockData } from '../lib/stockApi';
 
@@ -85,10 +86,20 @@ export default function Home() {
 
     let updatedPortfolio;
     if (existingIndex >= 0) {
-      // Update existing stock
+      // Update existing stock - add shares and recalculate average purchase price
+      const existingStock = portfolio[existingIndex];
+      const totalShares = existingStock.shares + newStock.shares;
+      const totalInvestment = existingStock.investment + newStock.investment;
+      const newAvgPrice = totalInvestment / totalShares;
+      
       updatedPortfolio = portfolio.map((item, index) => 
         index === existingIndex 
-          ? { ...item, investment: item.investment + newStock.investment }
+          ? { 
+              ...item, 
+              shares: totalShares,
+              investment: totalInvestment,
+              purchasePrice: newAvgPrice
+            }
           : item
       );
     } else {
@@ -110,6 +121,12 @@ export default function Home() {
     setTimeRange(range);
   };
 
+  const handleImportPortfolio = (importedPortfolio) => {
+    setPortfolio(importedPortfolio);
+    savePortfolio(importedPortfolio);
+    updateStockData(importedPortfolio, timeRange);
+  };
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-8">
@@ -120,6 +137,10 @@ export default function Home() {
               <TimeRangeSelector 
                 selectedRange={timeRange} 
                 onChange={handleTimeRangeChange} 
+              />
+              <PortfolioIO 
+                portfolio={portfolio}
+                onImport={handleImportPortfolio}
               />
               <button 
                 onClick={toggleAddStock}

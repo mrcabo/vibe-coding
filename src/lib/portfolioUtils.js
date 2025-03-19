@@ -58,7 +58,7 @@ export const calculateTotalValue = (portfolio, stockData) => {
  */
 export const calculateStockValue = (stock, stockData) => {
   // Check if all required data exists
-  if (!stock || !stock.symbol || !stock.investment || !stock.purchasePrice) {
+  if (!stock || !stock.symbol || !stock.shares) {
     return 0;
   }
   
@@ -67,12 +67,11 @@ export const calculateStockValue = (stock, stockData) => {
       stockData[stock.symbol] && 
       stockData[stock.symbol].currentPrice && 
       !isNaN(stockData[stock.symbol].currentPrice)) {
-    const shares = stock.investment / stock.purchasePrice;
-    return shares * stockData[stock.symbol].currentPrice;
+    return stock.shares * stockData[stock.symbol].currentPrice;
   }
   
   // Return initial investment as fallback
-  return stock.investment || 0;
+  return stock.investment || (stock.shares * stock.purchasePrice) || 0;
 };
 
 /**

@@ -28,6 +28,7 @@ const PortfolioTreemapSimplified = ({ portfolio, stockData, isLoading }) => {
     const currentValue = calculateStockValue(stock, stockData);
     const percentChange = calculatePercentChange(stock, stockData);
     const percentOfPortfolio = (currentValue / totalValue) * 100;
+    const sharesText = `${stock.shares} ${stock.shares === 1 ? 'share' : 'shares'}`;
     
     // Determine color based on percent change
     const getBlockColor = () => {
@@ -49,6 +50,8 @@ const PortfolioTreemapSimplified = ({ portfolio, stockData, isLoading }) => {
     return {
       symbol: stock.symbol,
       companyName: stock.companyName,
+      shares: stock.shares,
+      sharesText,
       currentValue,
       percentChange,
       percentOfPortfolio,
@@ -91,7 +94,8 @@ const PortfolioTreemapSimplified = ({ portfolio, stockData, isLoading }) => {
                 <p className="text-sm font-medium">
                   {block.percentChange >= 0 ? '+' : ''}{block.percentChange.toFixed(2)}%
                 </p>
-                <p className="text-xs mt-2">{block.percentOfPortfolio.toFixed(1)}% of portfolio</p>
+                <p className="text-xs mt-1">{block.sharesText}</p>
+                <p className="text-xs">{block.percentOfPortfolio.toFixed(1)}% of portfolio</p>
               </div>
             </div>
           );

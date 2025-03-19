@@ -5,7 +5,7 @@ const AddStockForm = ({ onAddStock }) => {
     symbol: '',
     companyName: '',
     purchasePrice: '',
-    investment: ''
+    shares: ''
   });
   const [error, setError] = useState('');
 
@@ -21,29 +21,33 @@ const AddStockForm = ({ onAddStock }) => {
     e.preventDefault();
     
     // Validate form
-    if (!formData.symbol || !formData.companyName || !formData.purchasePrice || !formData.investment) {
+    if (!formData.symbol || !formData.companyName || !formData.purchasePrice || !formData.shares) {
       setError('All fields are required');
       return;
     }
 
     const purchasePrice = parseFloat(formData.purchasePrice);
-    const investment = parseFloat(formData.investment);
+    const shares = parseInt(formData.shares, 10);
 
     if (isNaN(purchasePrice) || purchasePrice <= 0) {
       setError('Purchase price must be a positive number');
       return;
     }
 
-    if (isNaN(investment) || investment <= 0) {
-      setError('Investment amount must be a positive number');
+    if (isNaN(shares) || shares <= 0 || !Number.isInteger(shares)) {
+      setError('Shares must be a positive whole number');
       return;
     }
+
+    // Calculate the investment amount
+    const investment = purchasePrice * shares;
 
     // Submit the stock
     onAddStock({
       symbol: formData.symbol.toUpperCase(),
       companyName: formData.companyName,
       purchasePrice,
+      shares,
       investment
     });
 
@@ -52,7 +56,7 @@ const AddStockForm = ({ onAddStock }) => {
       symbol: '',
       companyName: '',
       purchasePrice: '',
-      investment: ''
+      shares: ''
     });
     setError('');
   };
@@ -113,18 +117,18 @@ const AddStockForm = ({ onAddStock }) => {
       </div>
       
       <div>
-        <label htmlFor="investment" className="block text-sm font-medium mb-1">
-          Total Investment ($)
+        <label htmlFor="shares" className="block text-sm font-medium mb-1">
+          Number of Shares
         </label>
         <input
           type="number"
-          id="investment"
-          name="investment"
-          value={formData.investment}
+          id="shares"
+          name="shares"
+          value={formData.shares}
           onChange={handleChange}
-          placeholder="5000.00"
-          min="0.01"
-          step="0.01"
+          placeholder="10"
+          min="1"
+          step="1"
           className="w-full p-2 border rounded"
         />
       </div>
