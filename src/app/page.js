@@ -14,6 +14,11 @@ export default function Home() {
   const [stockData, setStockData] = useState({});
   const [timeRange, setTimeRange] = useState('1m'); // Default to 1 month
   const [isLoading, setIsLoading] = useState(true);
+  const [showAddStock, setShowAddStock] = useState(false);
+
+  const toggleAddStock = () => {
+    setShowAddStock(!showAddStock);
+  };
 
   // Load portfolio data on component mount
   useEffect(() => {
@@ -107,26 +112,33 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Add Stock</h2>
-          <AddStockForm onAddStock={addStock} />
-          <h2 className="text-xl font-semibold mt-8 mb-4">Your Portfolio</h2>
-          <PortfolioList 
-            portfolio={portfolio} 
-            stockData={stockData} 
-            onRemove={removeStock} 
-          />
-        </div>
+      <div className="grid grid-cols-1 gap-8">
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Portfolio Visualization</h2>
-            <TimeRangeSelector 
-              selectedRange={timeRange} 
-              onChange={handleTimeRangeChange} 
-            />
+            <div className="flex items-center gap-4">
+              <TimeRangeSelector 
+                selectedRange={timeRange} 
+                onChange={handleTimeRangeChange} 
+              />
+              <button 
+                onClick={toggleAddStock}
+                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+              >
+                {showAddStock ? 'Hide Form' : 'Add Stock'}
+              </button>
+            </div>
           </div>
-          {/* Try the simplified treemap first */}
+          
+          {/* Show Add Stock form only when button is clicked */}
+          {showAddStock && (
+            <div className="mb-6 p-4 border rounded bg-gray-50">
+              <h2 className="text-lg font-semibold mb-3">Add New Stock</h2>
+              <AddStockForm onAddStock={addStock} />
+            </div>
+          )}
+          
+          {/* Larger treemap visualization */}
           <PortfolioTreemapSimplified 
             portfolio={portfolio} 
             stockData={stockData}
@@ -141,6 +153,16 @@ export default function Home() {
               isLoading={isLoading}
             />
           </div>
+        </div>
+        
+        {/* Portfolio list below the visualization */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Your Portfolio</h2>
+          <PortfolioList 
+            portfolio={portfolio} 
+            stockData={stockData} 
+            onRemove={removeStock} 
+          />
         </div>
       </div>
     </div>

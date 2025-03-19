@@ -61,37 +61,37 @@ const PortfolioTreemapSimplified = ({ portfolio, stockData, isLoading }) => {
   stockBlocks.sort((a, b) => b.currentValue - a.currentValue);
   
   return (
-    <div className="border rounded bg-white p-4" style={{ minHeight: '400px' }}>
-      <div className="flex flex-wrap gap-2" style={{ minHeight: '360px' }}>
+    <div className="border rounded bg-white p-4" style={{ minHeight: '500px' }}>
+      <div className="flex flex-wrap gap-3" style={{ minHeight: '460px' }}>
         {stockBlocks.map((block) => {
           // Calculate size based on portfolio percentage (with min and max sizes)
           const width = Math.max(30, Math.min(100, (block.percentOfPortfolio * 3)));
-          const height = Math.max(120, Math.min(200, 120 + (block.percentOfPortfolio * 2)));
+          const height = Math.max(160, Math.min(240, 160 + (block.percentOfPortfolio * 2)));
           
           return (
             <div 
               key={block.symbol}
-              className="p-3 rounded flex flex-col justify-between"
+              className="p-4 rounded flex flex-col justify-between shadow-sm"
               style={{ 
                 backgroundColor: block.backgroundColor,
                 color: block.textColor,
                 width: `${width}%`,
                 height: `${height}px`,
-                margin: '0.25rem',
+                margin: '0.35rem',
                 flexGrow: 1,
-                minWidth: '140px'
+                minWidth: '180px'
               }}
             >
               <div>
-                <h3 className="font-bold text-lg">{block.symbol}</h3>
-                <p className="text-sm">{block.companyName}</p>
+                <h3 className="font-bold text-xl">{block.symbol}</h3>
+                <p className="text-sm opacity-90">{block.companyName}</p>
               </div>
               <div>
-                <p className="font-semibold">${block.currentValue.toFixed(2)}</p>
-                <p className="text-sm">
+                <p className="font-semibold text-lg">${block.currentValue.toFixed(2)}</p>
+                <p className="text-sm font-medium">
                   {block.percentChange >= 0 ? '+' : ''}{block.percentChange.toFixed(2)}%
                 </p>
-                <p className="text-xs mt-1">{block.percentOfPortfolio.toFixed(1)}% of portfolio</p>
+                <p className="text-xs mt-2">{block.percentOfPortfolio.toFixed(1)}% of portfolio</p>
               </div>
             </div>
           );
