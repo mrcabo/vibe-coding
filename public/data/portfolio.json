@@ -1,0 +1,32 @@
+[
+    {
+      "symbol": "AAPL",
+      "companyName": "Apple Inc.",
+      "purchasePrice": 150.25,
+      "investment": 5000
+    },
+    {
+      "symbol": "MSFT",
+      "companyName": "Microsoft Corporation",
+      "purchasePrice": 245.75,
+      "investment": 7500
+    },
+    {
+      "symbol": "GOOGL",
+      "companyName": "Alphabet Inc.",
+      "purchasePrice": 2750.32,
+      "investment": 8250
+    },
+    {
+      "symbol": "AMZN",
+      "companyName": "Amazon.com Inc.",
+      "purchasePrice": 3255.50,
+      "investment": 6500
+    },
+    {
+      "symbol": "TSLA",
+      "companyName": "Tesla, Inc.",
+      "purchasePrice": 725.60,
+      "investment": 4300
+    }
+  ]
